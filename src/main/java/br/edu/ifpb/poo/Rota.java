@@ -1,14 +1,6 @@
 package br.edu.ifpb.poo;
 import lombok.*;
 
-/** 
-Pré-condição: Não há
-1) Usuário solicita cadastro de rota
-2) Sistema pede o endereço de destino, máscara de subrede, roteador (gateway) de destino e interface física
-3) Usuário informa dados
-4) Sistema verifica se já há uma rota idêntica, se houver informa erro, senão, registra a rota
-**/
-
 @Data
 @AllArgsConstructor
 public class Rota
@@ -32,9 +24,23 @@ public class Rota
         return interfaceFisica.getEndereco();
     }
     
-    public String toString()
+
+    public String getMascaraFormatada(boolean exibirCIDR)
     {
-        return "Destino: " + destino+ "  " + "Gateway: "+ gateway+"  "+"Máscara: " + subMasc + "  "+  interfaceFisica.getNome();
+        if (!exibirCIDR)
+        {
+            return subMasc; // exibe a máscara original
+        }
+    
+        int cidr = IpUtils.mascaraParaCIDR(subMasc);
+        return "/" + cidr;
     }
 
+    public String toString(boolean exibirCIDR)
+    {
+        return "Destino: " + destino +
+               "  " + getMascaraFormatada(exibirCIDR) +
+               "  --> Gateway: " + gateway +
+               "  IF: " + interfaceFisica.getNome() + "\n";
+    }
 }
